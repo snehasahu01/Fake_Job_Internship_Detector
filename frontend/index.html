@@ -2,357 +2,743 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fake Job & Internship Detector</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f8fafc" />
+  <title>JobShield AI | Job Fraud Detection</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --ink: #172033;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --surface: #ffffff;
+      --page: #f8fafc;
+      --green: #15803d;
+      --red: #b91c1c;
+      --radius: 16px;
+    }
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #0b1020;
-            color: #f1f5f9;
-            min-height: 100vh;
-        }
+    * { box-sizing: border-box; }
 
-        header {
-            padding: 22px 8%;
-            border-bottom: 1px solid #263047;
-            background: #10172a;
-        }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+        BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--page);
+      line-height: 1.6;
+    }
 
-        header h2 {
-            color: #60a5fa;
-            font-size: 23px;
-        }
+    button, input, select, textarea { font: inherit; }
 
-        header p {
-            color: #94a3b8;
-            font-size: 13px;
-            margin-top: 7px;
-        }
+    .container {
+      width: min(1040px, calc(100% - 36px));
+      margin: auto;
+    }
 
-        .hero {
-            text-align: center;
-            padding: 45px 20px 25px;
-        }
+    header {
+      background: rgba(255,255,255,.92);
+      border-bottom: 1px solid var(--border);
+    }
 
-        .tag {
-            display: inline-block;
-            padding: 8px 14px;
-            border: 1px solid #334155;
-            border-radius: 20px;
-            color: #93c5fd;
-            font-size: 12px;
-            margin-bottom: 18px;
-        }
+    .nav {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
 
-        .hero h1 {
-            font-size: clamp(28px, 5vw, 42px);
-            margin-bottom: 14px;
-        }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: -.5px;
+    }
 
-        .hero h1 span {
-            color: #60a5fa;
-        }
+    .shield {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 13px;
+      color: white;
+      background: var(--primary);
+      flex-shrink: 0;
+    }
 
-        .hero p {
-            color: #94a3b8;
-            line-height: 1.7;
-            max-width: 620px;
-            margin: auto;
-        }
+    .shield svg { width: 25px; height: 25px; }
 
-        .container {
-            width: min(850px, 92%);
-            margin: 10px auto 50px;
-        }
+    .brand small {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+    }
 
-        .form-card {
-            background: #111a2e;
-            border: 1px solid #263650;
-            border-radius: 16px;
-            padding: 28px;
-        }
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #166534;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
 
-        .form-card h2 {
-            font-size: 21px;
-            margin-bottom: 8px;
-        }
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      background: #22c55e;
+      border-radius: 50%;
+    }
 
-        .subtitle {
-            color: #94a3b8;
-            font-size: 14px;
-            margin-bottom: 25px;
-            line-height: 1.6;
-        }
+    main { padding: 44px 0 60px; }
 
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
+    .hero {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto 34px;
+    }
 
-        .field {
-            display: flex;
-            flex-direction: column;
-            gap: 9px;
-        }
+    .eyebrow {
+      display: inline-block;
+      color: var(--primary);
+      background: #eff6ff;
+      border: 1px solid #dbeafe;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .7px;
+      text-transform: uppercase;
+    }
 
-        .full {
-            grid-column: 1 / -1;
-        }
+    h1 {
+      margin: 17px 0 12px;
+      font-size: clamp(30px, 5vw, 46px);
+      line-height: 1.15;
+      letter-spacing: -1.7px;
+    }
 
-        label {
-            font-size: 14px;
-            font-weight: bold;
-        }
+    .hero p {
+      color: var(--muted);
+      max-width: 590px;
+      margin: 0 auto;
+      font-size: 16px;
+    }
 
-        input, select, textarea {
-            width: 100%;
-            padding: 12px;
-            background: #0b1222;
-            color: #f1f5f9;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            font: inherit;
-            outline: none;
-        }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 26px;
+    }
 
-        input:focus, select:focus, textarea:focus {
-            border-color: #60a5fa;
-        }
+    .feature {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-        textarea {
-            resize: vertical;
-            min-height: 95px;
-        }
+    .feature-icon {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      background: #eff6ff;
+      color: var(--primary);
+      border-radius: 11px;
+      flex-shrink: 0;
+    }
 
-        .check-button {
-            width: 100%;
-            margin-top: 25px;
-            padding: 14px;
-            background: #3b82f6;
-            color: white;
-            border: none;
-            border-radius: 9px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+    .feature-icon svg { width: 21px; height: 21px; }
 
-        .check-button:hover {
-            background: #2563eb;
-        }
+    .feature strong { display: block; font-size: 13px; }
+    .feature span { display: block; font-size: 11px; color: var(--muted); }
 
-        .note {
-            margin-top: 18px;
-            text-align: center;
-            font-size: 12px;
-            color: #94a3b8;
-            line-height: 1.6;
-        }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 32px rgba(15,23,42,.045);
+      overflow: hidden;
+    }
 
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #64748b;
-            font-size: 12px;
-        }
+    .panel-head {
+      padding: 25px 28px;
+      border-bottom: 1px solid var(--border);
+    }
 
-        @media (max-width: 600px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
+    .panel-head h2 { margin: 0 0 5px; font-size: 21px; }
+    .panel-head p { margin: 0; color: var(--muted); font-size: 13px; }
 
-            .full {
-                grid-column: auto;
-            }
+    form { padding: 26px 28px 28px; }
 
-            .form-card {
-                padding: 20px;
-            }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px 20px;
+    }
 
-            header {
-                padding: 20px 5%;
-            }
-        }
-    </style>
+    .field { min-width: 0; }
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .required { color: var(--primary); }
+
+    input, select, textarea {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 14px;
+      color: var(--ink);
+      background: #fff;
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    textarea {
+      min-height: 108px;
+      resize: vertical;
+    }
+
+    input::placeholder, textarea::placeholder { color: #94a3b8; }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 6px;
+    }
+
+    .submit {
+      width: 100%;
+      min-height: 52px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--primary);
+      color: white;
+      font-weight: 750;
+      cursor: pointer;
+      margin-top: 25px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      transition: background .2s, transform .2s;
+    }
+
+    .submit:hover { background: var(--primary-dark); }
+    .submit:active { transform: scale(.99); }
+    .submit:disabled { opacity: .7; cursor: wait; }
+
+    .spinner {
+      width: 19px;
+      height: 19px;
+      border: 2px solid rgba(255,255,255,.45);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .privacy-note {
+      margin: 16px 0 0;
+      text-align: center;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .message {
+      display: none;
+      margin-top: 20px;
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 13px;
+    }
+
+    .message.error {
+      display: block;
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .result {
+      display: none;
+      margin-top: 25px;
+      scroll-margin-top: 24px;
+    }
+
+    .result.visible { display: block; }
+
+    .result-top {
+      padding: 23px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .result-symbol {
+      display: grid;
+      place-items: center;
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      flex-shrink: 0;
+      font-size: 25px;
+      font-weight: 800;
+    }
+
+    .result.genuine .result-symbol { background: #dcfce7; color: var(--green); }
+    .result.fraudulent .result-symbol { background: #fee2e2; color: var(--red); }
+
+    .result-kicker {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+    }
+
+    .result-top h2 { margin: 3px 0 5px; font-size: 25px; }
+    .result-top p { margin: 0; color: var(--muted); font-size: 13px; }
+
+    .result.genuine .result-top h2 { color: var(--green); }
+    .result.fraudulent .result-top h2 { color: var(--red); }
+
+    .result-body { padding: 23px; }
+
+    .result-body h3 { margin: 0 0 16px; font-size: 16px; }
+
+    .probabilities {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .prob-card {
+      padding: 16px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      min-width: 0;
+    }
+
+    .prob-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 11px;
+    }
+
+    .prob-head strong { font-size: 16px; white-space: nowrap; }
+
+    .track {
+      height: 8px;
+      border-radius: 99px;
+      background: #e2e8f0;
+      overflow: hidden;
+    }
+
+    .bar {
+      height: 100%;
+      width: 0;
+      border-radius: 99px;
+      transition: width .65s ease;
+    }
+
+    .bar.green { background: #22a447; }
+    .bar.red { background: #ef4444; }
+
+    .tips {
+      margin-top: 22px;
+      background: #eff6ff;
+      border: 1px solid #dbeafe;
+      border-radius: 12px;
+      padding: 17px;
+    }
+
+    .tips h3 { margin: 0 0 8px; font-size: 14px; color: #1e40af; }
+    .tips ul { padding-left: 19px; margin: 0; color: #334155; font-size: 12px; }
+    .tips li + li { margin-top: 6px; }
+
+    .disclaimer {
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      text-align: center;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 22px 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 650px) {
+      .container { width: min(100% - 24px, 520px); }
+      .nav { min-height: 68px; }
+      .brand { font-size: 17px; }
+      .shield { width: 39px; height: 39px; }
+      .status { font-size: 10px; padding: 6px 8px; }
+      main { padding: 30px 0 40px; }
+      h1 { letter-spacing: -1px; }
+      .hero p { font-size: 14px; }
+      .features { gap: 8px; }
+      .feature { padding: 11px 8px; display: block; }
+      .feature-icon { margin-bottom: 8px; width: 34px; height: 34px; }
+      .feature strong { font-size: 11px; }
+      .feature span { font-size: 10px; }
+      .panel-head { padding: 21px 18px; }
+      form { padding: 22px 18px; }
+      .form-grid { grid-template-columns: 1fr; gap: 18px; }
+      .field.full { grid-column: auto; }
+      .result-top, .result-body { padding: 18px; }
+      .result-top h2 { font-size: 21px; }
+      .probabilities { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
 </head>
 
 <body>
-    <header>
-        <h2>🛡️ JobShield AI</h2>
-        <p>Fake Job & Internship Detection System</p>
-    </header>
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <div class="shield" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </div>
+        <div>JobShield AI<small>SMART JOB FRAUD DETECTION</small></div>
+      </div>
+      <div class="status"><span class="status-dot"></span> AI-Powered Analysis</div>
+    </div>
+  </header>
 
+  <main class="container">
     <section class="hero">
-        <div class="tag">AI-POWERED JOB SAFETY</div>
-        <h1>Check Before You <span>Apply</span></h1>
-        <p>
-            Analyze job posting details with our machine learning model
-            to identify potentially suspicious opportunities.
-        </p>
+      <span class="eyebrow">Your career, your safety</span>
+      <h1>Make your next career move<br />with more confidence.</h1>
+      <p>Analyze job posting details using machine learning to identify patterns that may indicate a suspicious opportunity.</p>
     </section>
 
-    <main class="container">
-        <section class="form-card">
-            <h2>Analyze a Job Posting</h2>
-            <p class="subtitle">
-                Enter the job details below to receive an AI prediction.
-            </p>
+    <section class="features" aria-label="Features">
+      <div class="feature">
+        <div class="feature-icon" aria-hidden="true">⌕</div>
+        <div><strong>Smart Analysis</strong><span>ML-powered prediction</span></div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon" aria-hidden="true">✓</div>
+        <div><strong>Clear Results</strong><span>Understand both probabilities</span></div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon" aria-hidden="true">◇</div>
+        <div><strong>Safety First</strong><span>Practical verification tips</span></div>
+      </div>
+    </section>
 
-            <form id="jobForm">
-                <div class="form-grid">
-                    <div class="field">
-                        <label for="title">Job Title</label>
-                        <input id="title" type="text"
-                               placeholder="e.g. Data Analyst Intern" required>
-                    </div>
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Analyze a job posting</h2>
+        <p>Fill in all the details below to receive an ML prediction.</p>
+      </div>
 
-                    <div class="field">
-                        <label for="company">Company Name</label>
-                        <input id="company" type="text"
-                               placeholder="Enter company name" required>
-                    </div>
+      <form id="jobForm">
+        <div class="form-grid">
+          <div class="field">
+            <label for="title">Job Title <span class="required">*</span></label>
+            <input id="title" name="title" required maxlength="200"
+              placeholder="e.g. Machine Learning Engineer" />
+          </div>
 
-                    <div class="field">
-                        <label for="contract">Contract Type</label>
-                        <input id="contract" type="text"
-                               placeholder="e.g. Full-time" required>
-                    </div>
+          <div class="field">
+            <label for="company_name">Company Name <span class="required">*</span></label>
+            <input id="company_name" name="company_name" required maxlength="200"
+              placeholder="Enter company name" />
+          </div>
 
-                    <div class="field">
-                        <label for="officialEmail">Official Company Email?</label>
-                        <select id="officialEmail" required>
-                            <option value="1">Yes</option>
-                            <option value="0">No</option>
-                        </select>
-                    </div>
+          <div class="field">
+            <label for="contract_type">Contract Type <span class="required">*</span></label>
+            <select id="contract_type" name="contract_type" required>
+              <option value="">Select contract type</option>
+              <option value="Full-time">Full-time</option>
+              <option value="Part-time">Part-time</option>
+              <option value="Internship">Internship</option>
+              <option value="Contract">Contract</option>
+              <option value="Temporary">Temporary</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
 
-                    <div class="field full">
-                        <label for="experience">
-                            Experience Letter Terms
-                        </label>
-                        <textarea id="experience"
-                                  placeholder="Enter experience letter details"
-                                  required></textarea>
-                    </div>
+          <div class="field">
+            <label for="has_official_email">Official Company Email? <span class="required">*</span></label>
+            <select id="has_official_email" name="has_official_email" required>
+              <option value="1">Yes</option>
+              <option value="0">No</option>
+            </select>
+            <div class="hint">Check whether the recruiter uses an official company domain.</div>
+          </div>
 
-                    <div class="field full">
-                        <label for="benefits">
-                            Package & Benefits Details
-                        </label>
-                        <textarea id="benefits"
-                                  placeholder="Enter salary, benefits and other details"
-                                  required></textarea>
-                    </div>
+          <div class="field full">
+            <label for="experience_letter_terms">Experience Letter Terms <span class="required">*</span></label>
+            <textarea id="experience_letter_terms" name="experience_letter_terms"
+              required maxlength="3000"
+              placeholder="Describe experience letter, employment terms or any conditions..."></textarea>
+          </div>
 
-                    <div class="field full">
-                        <label for="withholding">
-                            Contract Withholding Clause?
-                        </label>
-                        <select id="withholding" required>
-                            <option value="0">No</option>
-                            <option value="1">Yes</option>
-                        </select>
-                    </div>
-                </div>
+          <div class="field full">
+            <label for="package_benefits_detail">Package &amp; Benefits Details <span class="required">*</span></label>
+            <textarea id="package_benefits_detail" name="package_benefits_detail"
+              required maxlength="3000"
+              placeholder="Describe salary, benefits, fees or other package details..."></textarea>
+          </div>
 
-                <button class="check-button" type="submit">
-                    Analyze Job Posting →
-                </button>
-            </form>
+          <div class="field full">
+            <label for="contract_withholding_clause">Contract Withholding Clause? <span class="required">*</span></label>
+            <select id="contract_withholding_clause" name="contract_withholding_clause" required>
+              <option value="0">No</option>
+              <option value="1">Yes</option>
+            </select>
+            <div class="hint">Select Yes if the contract includes a clause that withholds or restricts the contract/experience documentation.</div>
+          </div>
+        </div>
 
-            <p class="note">
-                This tool provides an ML prediction, not a guarantee.
-                Always independently verify employers and job offers.
-            </p>
-        </section>
-    </main>
+        <button class="submit" id="submitBtn" type="submit">
+          <span id="buttonText">Analyze Job Posting</span>
+          <span id="buttonArrow" aria-hidden="true">→</span>
+        </button>
 
-    <footer>
-        JobShield AI · Fake Job & Internship Detector
-    </footer>
+        <p class="privacy-note">Please do not enter passwords, bank details or other sensitive personal information.</p>
+        <div id="errorMessage" class="message" role="alert" aria-live="polite"></div>
+      </form>
+    </section>
 
-<script>
-const jobForm = document.getElementById("jobForm");
+    <section id="result" class="panel result" aria-live="polite" aria-atomic="true">
+      <div class="result-top">
+        <div class="result-symbol" id="resultSymbol" aria-hidden="true">✓</div>
+        <div>
+          <div class="result-kicker">Analysis complete</div>
+          <h2 id="resultTitle">Prediction result</h2>
+          <p id="resultDescription"></p>
+        </div>
+      </div>
 
-jobForm.addEventListener("submit", async function(event) {
-    event.preventDefault();
+      <div class="result-body">
+        <h3>Prediction probabilities</h3>
+        <div class="probabilities">
+          <div class="prob-card">
+            <div class="prob-head">
+              <span>Genuine probability</span>
+              <strong id="genuineValue">—</strong>
+            </div>
+            <div class="track"><div class="bar green" id="genuineBar"></div></div>
+          </div>
+          <div class="prob-card">
+            <div class="prob-head">
+              <span>Fraudulent probability</span>
+              <strong id="fraudValue">—</strong>
+            </div>
+            <div class="track"><div class="bar red" id="fraudBar"></div></div>
+          </div>
+        </div>
 
-    const button = jobForm.querySelector("button[type='submit']");
-    button.disabled = true;
-    button.textContent = "Analyzing...";
+        <div class="tips">
+          <h3>Before you proceed</h3>
+          <ul id="tipsList">
+            <li>Verify the job on the company's official careers website.</li>
+            <li>Never pay a recruiter to secure a job or interview.</li>
+            <li>Confirm the recruiter's email domain and contact details.</li>
+          </ul>
+        </div>
 
-    const jobData = {
-        title: document.getElementById("title").value,
-        company_name: document.getElementById("company").value,
-        contract_type: document.getElementById("contract").value,
-        experience_letter_terms: document.getElementById("experience").value,
-        package_benefits_detail: document.getElementById("benefits").value,
-        contract_withholding_clause: Number(
-            document.getElementById("withholding").value
-        ),
-        has_official_email: Number(
-            document.getElementById("officialEmail").value
-        )
-    };
+        <p class="disclaimer" id="resultDisclaimer">
+          This is an ML prediction, not proof that a job is genuine or fraudulent. Independently verify every offer.
+        </p>
+      </div>
+    </section>
+  </main>
 
-    try {
-        const response = await fetch("http://127.0.0.1:8000/predict", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(jobData)
+  <footer>
+    <div class="container">JobShield AI · Machine learning for safer job searches</div>
+  </footer>
+
+  <script>
+    // Keep the FastAPI backend and /predict endpoint unchanged.
+    const API_URL = "http://127.0.0.1:8000/predict";
+
+    const form = document.getElementById("jobForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const buttonText = document.getElementById("buttonText");
+    const buttonArrow = document.getElementById("buttonArrow");
+    const errorMessage = document.getElementById("errorMessage");
+    const result = document.getElementById("result");
+
+    function showError(message) {
+      errorMessage.textContent = message;
+      errorMessage.className = "message error";
+    }
+
+    function clearError() {
+      errorMessage.textContent = "";
+      errorMessage.className = "message";
+    }
+
+    function probability(value) {
+      const number = Number(value);
+      if (!Number.isFinite(number)) return null;
+      return Math.max(0, Math.min(100, number));
+    }
+
+    function renderResult(data) {
+      if (!data || !["Genuine", "Fraudulent"].includes(data.prediction)) {
+        throw new Error("The API returned an unexpected prediction format. Check the response in /docs.");
+      }
+
+      const genuine = probability(data.genuine_probability);
+      const fraud = probability(data.fraudulent_probability);
+
+      if (genuine === null || fraud === null) {
+        throw new Error("The API response is missing valid probability values.");
+      }
+
+      const isGenuine = data.prediction === "Genuine";
+      result.className = "panel result visible " + (isGenuine ? "genuine" : "fraudulent");
+
+      document.getElementById("resultSymbol").textContent = isGenuine ? "✓" : "!";
+      document.getElementById("resultTitle").textContent =
+        isGenuine ? "Predicted: Genuine" : "Predicted: Fraudulent";
+
+      document.getElementById("resultDescription").textContent = isGenuine
+        ? "The model classified this posting as genuine. Still verify the employer independently."
+        : "The model detected patterns associated with fraudulent postings. Verify the opportunity carefully before proceeding.";
+
+      document.getElementById("genuineValue").textContent = genuine.toFixed(2) + "%";
+      document.getElementById("fraudValue").textContent = fraud.toFixed(2) + "%";
+      document.getElementById("genuineBar").style.width = genuine + "%";
+      document.getElementById("fraudBar").style.width = fraud + "%";
+
+      const tips = isGenuine
+        ? [
+            "Confirm the vacancy on the company's official careers website.",
+            "Verify the recruiter through independently found company contact details.",
+            "Read the written offer carefully and never pay recruitment or interview fees."
+          ]
+        : [
+            "Do not pay registration, training, security deposit or interview fees.",
+            "Verify the company and vacancy using its independently located official website.",
+            "Check the recruiter's email domain, salary claims and contract conditions before sharing documents."
+          ];
+
+      const tipsList = document.getElementById("tipsList");
+      tipsList.replaceChildren();
+      tips.forEach((tip) => {
+        const li = document.createElement("li");
+        li.textContent = tip;
+        tipsList.appendChild(li);
+      });
+
+      document.getElementById("resultDisclaimer").textContent =
+        data.disclaimer ||
+        "Probabilities are model estimates, not guarantees of authenticity or calibrated real-world risk. Independently verify every job offer.";
+
+      result.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      clearError();
+
+      if (!form.reportValidity()) return;
+
+      result.className = "panel result";
+      submitBtn.disabled = true;
+      buttonText.textContent = "Analyzing job details...";
+      buttonArrow.innerHTML = '<span class="spinner" aria-hidden="true"></span>';
+
+      const payload = {
+        title: document.getElementById("title").value.trim(),
+        company_name: document.getElementById("company_name").value.trim(),
+        contract_type: document.getElementById("contract_type").value,
+        experience_letter_terms: document.getElementById("experience_letter_terms").value.trim(),
+        package_benefits_detail: document.getElementById("package_benefits_detail").value.trim(),
+        contract_withholding_clause: Number(document.getElementById("contract_withholding_clause").value),
+        has_official_email: Number(document.getElementById("has_official_email").value)
+      };
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
         });
 
-        const result = await response.json();
-
         if (!response.ok) {
-            throw new Error(JSON.stringify(result));
+          let detail = "";
+          try {
+            const body = await response.json();
+            detail = typeof body.detail === "string" ? body.detail : "";
+          } catch (_) {}
+          throw new Error(detail || `API request failed (HTTP ${response.status}).`);
         }
 
-        let resultBox = document.getElementById("resultBox");
-
-        if (!resultBox) {
-            resultBox = document.createElement("div");
-            resultBox.id = "resultBox";
-            resultBox.style.cssText =
-                "margin-top:20px;padding:20px;border:1px solid #334155;" +
-                "border-radius:10px;background:#0b1222;line-height:1.8;";
-            jobForm.parentElement.appendChild(resultBox);
+        const data = await response.json();
+        renderResult(data);
+      } catch (error) {
+        if (error instanceof TypeError) {
+          showError("Could not connect to the API. Make sure FastAPI is running at http://127.0.0.1:8000 and try again.");
+        } else {
+          showError(error.message || "Something went wrong while analyzing this posting.");
         }
-
-        const isFraudulent = result.prediction === "Fraudulent";
-
-        resultBox.innerHTML = `
-            <h2 style="color:${isFraudulent ? '#f87171' : '#4ade80'}">
-                Prediction: ${result.prediction}
-            </h2>
-            <p>Genuine probability: ${result.genuine_probability}%</p>
-            <p>Fraudulent probability: ${result.fraudulent_probability}%</p>
-            <p style="color:#94a3b8;font-size:13px">
-                ${result.disclaimer}
-            </p>
-        `;
-
-    } catch (error) {
-        alert(
-            "Prediction failed. Check that the FastAPI server is running.\n" +
-            error.message
-        );
-    } finally {
-        button.disabled = false;
-        button.textContent = "Analyze Job Posting →";
-    }
-});
-</script>
+      } finally {
+        submitBtn.disabled = false;
+        buttonText.textContent = "Analyze Job Posting";
+        buttonArrow.textContent = "→";
+      }
+    });
+  </script>
 </body>
 </html>
