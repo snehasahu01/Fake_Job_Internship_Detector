@@ -729,7 +729,7 @@
         renderResult(data);
       } catch (error) {
         if (error instanceof TypeError) {
-          showError("Could not connect to the API. Make sure FastAPI is running at http://127.0.0.1:8000 and try again.");
+          showError("Could not connect to the API. Please check your internet connection or try again later.");
         } else {
           showError(error.message || "Something went wrong while analyzing this posting.");
         }
