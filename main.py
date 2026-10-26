@@ -1,5 +1,20 @@
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
+app = FastAPI(
+    title="Fake Job Internship Detector API",
+    description="API to predict suspicious job postings",
+    version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
