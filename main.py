@@ -14,12 +14,19 @@ app = FastAPI(
 )
 
 
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://fake-job-internship-detector-zlwt.onrender.com"],
-    allow_methods=["GET", "POST"],
-    allow_headers=["Content-Type"],
+    allow_origins=[
+        "http://127.0.0.1:5500",
+        "http://localhost:5500",
+        "https://fake-job-internship-detector-zlwt.onrender.com",
+    ],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
 
 # Load the saved ML model and TF-IDF vectorizer
 BASE_DIR = Path(__file__).resolve().parent
