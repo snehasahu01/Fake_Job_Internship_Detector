@@ -1,6 +1,4 @@
-const API_BASE = "https://jobshield-ai-1f2r.onrender.com";
-
-
+const API_URL = "https://jobshield-ai-1f2r.onrender.com/predict";
 
 const payload = {
     title: document.getElementById("title").value,
@@ -25,12 +23,10 @@ const response = await fetch(`${API_BASE}/predict`, {
 });
 
 if (!response.ok) {
-    throw new Error(`API request failed: ${response.status}`);
+    const errorText = await response.text();
+    throw new Error(`API error ${response.status}: ${errorText}`);
 }
 
 const result = await response.json();
 
-console.log(result.prediction);
-console.log(result.genuine_probability);
-console.log(result.fraudulent_probability);
-
+console.log(result);
